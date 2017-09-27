@@ -102,7 +102,13 @@ function main() {
       esac
       shift
     done
-    [ ! -d "$YADM_WORK" ] && error_out "Work tree does not exist: [$YADM_WORK]"
+
+    if [ ! -d "$YADM_WORK" -a "$YADM_COMMAND" != "clone" ]; then
+      error_out "Work tree does not exist: [$YADM_WORK]"
+    else
+      mkdir -p "$YADM_WORK" || error_out "Could not create work tree: [$YADM_WORK]"
+    fi
+
     HOOK_COMMAND="$YADM_COMMAND"
     invoke_hook "pre"
     $YADM_COMMAND "${YADM_ARGS[@]}"
